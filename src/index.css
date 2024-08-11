@@ -52,6 +52,11 @@ body {
       padding: 10px 15px;
       border: 1px solid gray;
       border-radius: var(--base-border-radius);
+      cursor: pointer;
+    }
+
+    li:hover {
+      background-color: rgb(237, 229, 229);
     }
   }
 }

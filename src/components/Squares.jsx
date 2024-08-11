@@ -32,30 +32,36 @@ const calculateWinner = (squares) => {
 	return false;
 };
 
+const SQUARE_FILLED_MESSAGE = 'The Square is filled';
+
 const Squares = () => {
 	const squaresArray = Array(9).fill(null);
 	const [xIsNext, setXIsNext] = useState(true);
 	const [histories, setHistories] = useState([]);
+    const [playerHistory, setPlayerHistory] = useState([]);
 
 	const [squares, setSquares] = useState(squaresArray);
 	const winner = calculateWinner(squares);
 	const handleClick = (index) => {
 		if (squares[index] || winner) {
-			alert(winner ? `The winner is ${winner}` : 'The Square is filled');
+			alert(winner ? `The winner is ${winner}` : SQUARE_FILLED_MESSAGE);
 			return;
 		}
 
 		const nextSquares = squares.slice();
 		nextSquares[index] = xIsNext ? 'X' : 'O';
 		histories.push(nextSquares);
+        const playerContainer = playerHistory;
+        playerContainer.push(xIsNext ? 'X' : 'O');
+        setPlayerHistory(playerContainer);
 		setXIsNext(!xIsNext);
 		setSquares(nextSquares);
 		setHistories(histories);
 
-		alert(`Next Player is ${xIsNext ? 'X' : '0'}`);
+		alert(`Next Player is ${xIsNext ? 'O' : 'X'}`);
 	};
 
-	let status = `Next Player is ${xIsNext ? 'X' : '0'}`;
+	let status = `Current Player is ${xIsNext ? 'X' : '0'}`;
 	if (winner) {
 		status = `The winner is ${winner}`;
 	}
@@ -64,6 +70,12 @@ const Squares = () => {
 		status = 'Game is over';
 		alert(status);
 	}
+
+    const onClickHistory = (history) => {
+        const steps = history?.filter(curr => curr !== null);
+        setXIsNext(history?.filter(curr => curr !== null)[steps.length-1] === 'X' ? false : true);
+        setSquares(history);
+    };
 
 	return (
 		<div className='board-wrapper'>
@@ -78,7 +90,7 @@ const Squares = () => {
 					/>
 				))}
 			</div>
-			<GameHistory histories={histories} />
+			<GameHistory histories={histories} playerTurn={playerHistory} onClickHistory={(history, playerTurn) => onClickHistory(history, playerTurn)} />
 		</div>
 	);
 };
